@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+    <title>Apache Benchmark Result Analyzer</title>
+</head>
+<body>
+    <h1>Apache Benchmark Result Analyzer</h1>
+    <div id="app"></div>
+
+<script type="text/template" id="app-template">
+    <table>
+        <tr>
+            <td style="vertical-align:top">
+                <textarea class="content" cols="80" rows="30" placeholder="Paste the result from ab test here.."></textarea>
+            </td>
+            <td>
+                <button class="process">Process</button>
+            </td>
+            <td style="vertical-align: top">
+                <div id="ab-preview"></div>
+            </td>
+        </tr>
+    </table>
+    <div id="ab-results"></div>
+</script>
+
+<script type="text/template" id="preview-template">
+    <table border=1>
+      <tr>
+        <th rowspan="3">Server</th>
+        <th>Software</th>
+        <td><%- model.server.software %></td>
+      </tr>
+      <tr>
+        <th>Hostname</th>
+        <td><%- model.server.hostname %></td>
+      </tr>
+      <tr>
+        <th>Port</th>
+        <td><%- model.server.port %></td>
+      </tr>
+
+      <tr>
+        <th rowspan="2">Document</th>
+        <th>Path</th>
+        <td><%- model.document.path %></td>
+      </tr>
+      <tr>
+        <th>Length</th>
+        <td><%- model.document.length %> bytes</td>
+      </tr>
+
+      <tr>
+        <th rowspan="10">Test</th>
+        <th>Concurrency Level</th>
+        <td><%- model.test.concurencyLevel %></td>
+      </tr>
+      <tr>
+        <th>Time taken for tests</th>
+        <td><%- model.test.timeTaken %> seconds</td>
+      </tr>
+      <tr>
+        <th>Complete requests</th>
+        <td><%- model.test.completeRequests %></td>
+      </tr>
+      <tr>
+        <th>Failed requests</th>
+        <td><%- model.test.failedRequests %></td>
+      </tr>
+      <tr>
+        <th>Total transferred</th>
+        <td><%- model.test.totalTransferred %></td>
+      </tr>
+      <tr>
+        <th>HTML transferred</th>
+        <td><%- model.test.htmlTransferred %></td>
+      </tr>
+      <tr>
+        <th>Requests per second</th>
+        <td><%- model.test.requestsPerSecond %> [#/sec] (mean)</td>
+      </tr>
+      <tr>
+        <th>Time per request</th>
+        <td><%- model.test.timePerRequest %> [ms] (mean)</td>
+      </tr>
+      <tr>
+        <th>Time per request</th>
+        <td><%- model.test.timePerRequestAll %> [ms] (mean, across all concurrent requests)</td>
+      </tr>
+      <tr>
+        <th>Transfer rate</th>
+        <td><%- model.test.transferRate %> [Kbytes/sec] received</td>
+      </tr>
+    </table>
+</script>
+<script src="/dist/app.js"></script>
+</body>
+</html>
