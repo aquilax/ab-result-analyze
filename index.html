@@ -41,73 +41,123 @@
 
 <script type="text/template" id="preview-template">
     <table border=1>
-      <tr>
-        <th rowspan="3">Server</th>
-        <th>Software</th>
-        <td><%- model.server.software %></td>
-      </tr>
-      <tr>
-        <th>Hostname</th>
-        <td><%- model.server.hostname %></td>
-      </tr>
-      <tr>
-        <th>Port</th>
-        <td><%- model.server.port %></td>
-      </tr>
+        <tr>
+            <th rowspan="3">Server</th>
+            <th>Software</th>
+            <td><%- model.server.software %></td>
+        </tr>
+        <tr>
+            <th>Hostname</th>
+            <td><%- model.server.hostname %></td>
+        </tr>
+        <tr>
+            <th>Port</th>
+            <td><%- model.server.port %></td>
+        </tr>
 
-      <tr>
-        <th rowspan="2">Document</th>
-        <th>Path</th>
-        <td><%- model.document.path %></td>
-      </tr>
-      <tr>
-        <th>Length</th>
-        <td><%- model.document.length %> bytes</td>
-      </tr>
+        <tr>
+            <th rowspan="2">Document</th>
+            <th>Path</th>
+            <td><%- model.document.path %></td>
+        </tr>
+        <tr>
+            <th>Length</th>
+            <td><%- model.document.length %> bytes</td>
+        </tr>
 
-      <tr>
-        <th rowspan="10">Test</th>
-        <th>Concurrency Level</th>
-        <td><%- model.test.concurencyLevel %></td>
-      </tr>
-      <tr>
-        <th>Time taken for tests</th>
-        <td><%- model.test.timeTaken %> seconds</td>
-      </tr>
-      <tr>
-        <th>Complete requests</th>
-        <td><%- model.test.completeRequests %></td>
-      </tr>
-      <tr>
-        <th>Failed requests</th>
-        <td><%- model.test.failedRequests %></td>
-      </tr>
-      <tr>
-        <th>Total transferred</th>
-        <td><%- model.test.totalTransferred %></td>
-      </tr>
-      <tr>
-        <th>HTML transferred</th>
-        <td><%- model.test.htmlTransferred %></td>
-      </tr>
-      <tr>
-        <th>Requests per second</th>
-        <td><%- model.test.requestsPerSecond %> [#/sec] (mean)</td>
-      </tr>
-      <tr>
-        <th>Time per request</th>
-        <td><%- model.test.timePerRequest %> [ms] (mean)</td>
-      </tr>
-      <tr>
-        <th>Time per request</th>
-        <td><%- model.test.timePerRequestAll %> [ms] (mean, across all concurrent requests)</td>
-      </tr>
-      <tr>
-        <th>Transfer rate</th>
-        <td><%- model.test.transferRate %> [Kbytes/sec] received</td>
-      </tr>
+        <tr>
+            <th rowspan="10">Test</th>
+            <th>Concurrency Level</th>
+            <td><%- model.test.concurencyLevel %></td>
+        </tr>
+        <tr>
+            <th>Time taken for tests</th>
+            <td><%- model.test.timeTaken %> seconds</td>
+        </tr>
+        <tr>
+            <th>Complete requests</th>
+            <td><%- model.test.completeRequests %></td>
+        </tr>
+        <tr>
+            <th>Failed requests</th>
+            <td><%- model.test.failedRequests %></td>
+        </tr>
+        <tr>
+            <th>Total transferred</th>
+            <td><%- model.test.totalTransferred %> bytes</td>
+        </tr>
+        <tr>
+            <th>HTML transferred</th>
+            <td><%- model.test.htmlTransferred %> bytes</td>
+        </tr>
+        <tr>
+            <th>Requests per second</th>
+            <td><%- model.test.requestsPerSecond %> [#/sec] (mean)</td>
+        </tr>
+        <tr>
+            <th>Time per request</th>
+            <td><%- model.test.timePerRequest %> [ms] (mean)</td>
+        </tr>
+        <tr>
+            <th>Time per request</th>
+            <td><%- model.test.timePerRequestAll %> [ms] (mean, across all concurrent requests)</td>
+        </tr>
+        <tr>
+            <th>Transfer rate</th>
+            <td><%- model.test.transferRate %> [Kbytes/sec] received</td>
+        </tr>
+        <tr>
+            <th>Connection Times (ms)</th>
+            <td colspan="2">
+                <table border="1" style="width: 100%">
+                    <tr>
+                        <th></th>
+                        <th>min</th>
+                        <th>mean</th>
+                        <th>[+/-sd]</th>
+                        <th>median</th>
+                        <th>max</th>
+                    </tr>
+                    <tr>
+                        <th>Connect</th>
+                        <td><%- model.time.connect.min %></td>
+                        <td><%- model.time.connect.mean %></td>
+                        <td><%- model.time.connect.sd %></td>
+                        <td><%- model.time.connect.median %></td>
+                        <td><%- model.time.connect.max %></td>
+                    </tr>
+                    <tr>
+                        <th>Processing</th>
+                        <td><%- model.time.processing.min %></td>
+                        <td><%- model.time.processing.mean %></td>
+                        <td><%- model.time.processing.sd %></td>
+                        <td><%- model.time.processing.median %></td>
+                        <td><%- model.time.processing.max %></td>
+                    </tr>
+                    <tr>
+                        <th>Waiting</th>
+                        <td><%- model.time.waiting.min %></td>
+                        <td><%- model.time.waiting.mean %></td>
+                        <td><%- model.time.waiting.sd %></td>
+                        <td><%- model.time.waiting.median %></td>
+                        <td><%- model.time.waiting.max %></td>
+                    </tr>
+                    <tr>
+                        <th>Total</th>
+                        <td><%- model.time.total.min %></td>
+                        <td><%- model.time.total.mean %></td>
+                        <td><%- model.time.total.sd %></td>
+                        <td><%- model.time.total.median %></td>
+                        <td><%- model.time.total.max %></td>
+                    </tr>
+                <table>
+
+
+            </td>
+        </tr>
     </table>
 </script>
 <script src="/dist/app.js"></script>
+<img src="//topsitecounter.appspot.com/t" alt="Top Site Counter" width="1" height="1" />
 </body>
 </html>
