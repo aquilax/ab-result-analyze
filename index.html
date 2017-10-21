@@ -1,11 +1,26 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-    <title>Apache Benchmark Result Analyzer</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Apache Benchmark Result Analyser</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59829770-14"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-59829770-14');
+    </script>
+
 </head>
 <body>
-    <h1>Apache Benchmark Result Analyzer</h1>
+    <h1>Apache Benchmark Result Analyser</h1>
     <div id="app"></div>
+    <p>Apache benchmark result analyser is online tool for analising apache bemnchmark (ab) results online.
+       Simply copy and paste the benchmark result into the filed to get it analysed.</p>
 
 <script type="text/template" id="app-template">
     <table>
