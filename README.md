@@ -1,2 +1,2 @@
 # ab-result-analyze
-Apache Benchmark Result Analyser
+Apache Bench Result Analyser
