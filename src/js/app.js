@@ -3,20 +3,11 @@ import $ from 'jquery/dist/jquery.min';
 import _ from 'underscore';
 import abResult from 'ab-result';
 
-class AbResultView extends Backbone.View.extend({
-    //template: _.template($('#ab-result').html()),
-
-}) {
-    initialize() {
-        this.render();
-    }
-
-    render() {
-        this.$el.html(this.template());
-    }
-}
-
 class AbResultModel extends Backbone.Model {}
+
+class AbResultCollection extends Backbone.Collection.extend({
+    model: AbResultModel,
+}) {}
 
 class PreviewView extends Backbone.View.extend({
     template: _.template($('#preview-template').html()),
@@ -33,15 +24,33 @@ class PreviewView extends Backbone.View.extend({
     }
 }
 
+class ResultListView extends Backbone.View.extend({
+    template: _.template($('#result-list-template').html()),
+}) {
+    initialize() {
+        this.listenTo(this.collection, 'update', this.render);
+    }
+
+    render() {
+        this.$el.html(this.template({
+            collection: this.collection.toJSON(),
+        }));
+        return this;
+    }
+}
+
 class AppView extends Backbone.View.extend({
     el: '#app',
     template: _.template($('#app-template').html()),
     events: {
         'click .process': 'onClickProcess',
+        'click #add': 'onClickAdd',
+        'input textarea': 'onClickProcess',
     },
 }) {
     initialize() {
         this.model = new AbResultModel();
+        this.collection = new AbResultCollection();
         this.render();
     }
 
@@ -52,13 +61,23 @@ class AppView extends Backbone.View.extend({
         }).el);
         // Reset model with empty data
         this.model.set(abResult(''));
+
+        this.$el.find('#ab-results').html(new ResultListView({
+            collection: this.collection,
+        }).el);
+
         return this;
     }
 
     onClickProcess() {
         const text = this.$el.find('.content').val();
-        const result = abResult(text)
-        this.model.set(abResult(text))
+        this.model.set(abResult(text));
+    }
+
+    onClickAdd() {
+        const data = this.model.toJSON();
+        data.cid = this.model.cid;
+        this.collection.add([new AbResultModel(data)]);
     }
 }
 

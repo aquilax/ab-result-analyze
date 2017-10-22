@@ -36,6 +36,7 @@
             </td>
         </tr>
     </table>
+    <button id="add">Add</button>
     <div id="ab-results"></div>
 </script>
 
@@ -151,11 +152,20 @@
                         <td><%- model.time.total.max %></td>
                     </tr>
                 <table>
-
-
             </td>
         </tr>
     </table>
+</script>
+<script type="text/template" id="result-list-template">
+    <ul>
+    <% _.each(collection, function(model) { %>
+        <li data-id="<%- model.cid %>">
+            Requests: <b><%- model.test.completeRequests + model.test.failedRequests %></b>
+            Concurrency: <b><%- model.test.concurencyLevel %></b>
+            (<%- model.server.hostname %>:<%- model.server.port %>)
+        </li>
+    <% }); %>
+    </ul>
 </script>
 <script src="/dist/app.js"></script>
 <img src="//topsitecounter.appspot.com/t" alt="Top Site Counter" width="1" height="1" />
