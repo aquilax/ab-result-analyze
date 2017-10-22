@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Apache Bench Result Analyser</title>
+    <style>
+        .gr {background-color: #cfc;}
+        .sm {background-color: #fcc;}
+        .eq {background-color: #ccf;}
+    </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59829770-14"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -40,6 +45,7 @@
     <button id="export">Export</button>
     <div id="export-data"></div>
     <div id="ab-results"></div>
+    <div id="diff-results"></div>
 </script>
 
 <script type="text/template" id="preview-template">
@@ -163,8 +169,8 @@
     <ul>
     <% _.each(collection, function(model) { %>
         <li data-id="<%- model.cid %>">
-            <input type="radio" name="from"/>
-            <input type="radio" name="to"/>
+            <input type="radio" name="from" value="<%- model.cid %>"/>
+            <input type="radio" name="to" value="<%- model.cid %>"/>
             Requests: <b><%- model.test.completeRequests + model.test.failedRequests %></b>
             Concurrency: <b><%- model.test.concurencyLevel %></b>
             (<%- model.server.hostname %>:<%- model.server.port %>)
@@ -173,6 +179,158 @@
         </li>
     <% }); %>
     </ul>
+</script>
+
+<script type="text/template" id="diff-template">
+    <table border=1>
+        <tr>
+            <th rowspan="3">Server</th>
+            <th>Software</th>
+            <td><%- model1.server.software %></td>
+            <td><%- model2.server.software %></td>
+        </tr>
+        <tr>
+            <th>Hostname</th>
+            <td><%- model1.server.hostname %></td>
+            <td><%- model2.server.hostname %></td>
+        </tr>
+        <tr>
+            <th>Port</th>
+            <td><%- model1.server.port %></td>
+            <td><%- model2.server.port %></td>
+        </tr>
+
+        <tr>
+            <th rowspan="2">Document</th>
+            <th>Path</th>
+            <td><%- model1.document.path %></td>
+            <td><%- model2.document.path %></td>
+        </tr>
+        <tr>
+            <th>Length</th>
+            <%= vdiff(model1.document.length, model2.document.length, 'bytes') %>
+            <%= vdiff(model2.document.length, model1.document.length, 'bytes') %>
+        </tr>
+
+        <tr>
+            <th rowspan="10">Test</th>
+            <th>Concurrency Level</th>
+            <%= vdiff(model1.test.concurencyLevel, model2.test.concurencyLevel) %>
+            <%= vdiff(model2.test.concurencyLevel, model1.test.concurencyLevel) %>
+        </tr>
+        <tr>
+            <th>Time taken for tests</th>
+            <%= vdiff(model1.test.timeTaken, model2.test.timeTaken, 'seconds') %>
+            <%= vdiff(model2.test.timeTaken, model1.test.timeTaken, 'seconds') %>
+        </tr>
+        <tr>
+            <th>Complete requests</th>
+            <%= vdiff(model1.test.completeRequests, model2.test.completeRequests) %>
+            <%= vdiff(model2.test.completeRequests, model1.test.completeRequests) %>
+        </tr>
+        <tr>
+            <th>Failed requests</th>
+            <%= vdiff(model1.test.failedRequests, model2.test.failedRequests) %>
+            <%= vdiff(model2.test.failedRequests, model1.test.failedRequests) %>
+        </tr>
+        <tr>
+            <th>Total transferred</th>
+            <%= vdiff(model1.test.totalTransferred, model2.test.totalTransferred, 'bytes') %>
+            <%= vdiff(model2.test.totalTransferred, model1.test.totalTransferred, 'bytes') %>
+        </tr>
+        <tr>
+            <th>HTML transferred</th>
+            <%= vdiff(model1.test.htmlTransferred, model1.test.htmlTransferred, 'bytes') %>
+            <%= vdiff(model2.test.htmlTransferred, model2.test.htmlTransferred, 'bytes') %>
+        </tr>
+        <tr>
+            <th>Requests per second</th>
+            <%= vdiff(model1.test.requestsPerSecond, model2.test.requestsPerSecond, '[#/sec] (mean)') %>
+            <%= vdiff(model2.test.requestsPerSecond, model1.test.requestsPerSecond, '[#/sec] (mean)') %>
+        </tr>
+        <tr>
+            <th>Time per request</th>
+            <%= vdiff(model1.test.timePerRequest, model2.test.timePerRequest, '[ms] (mean)') %>
+            <%= vdiff(model2.test.timePerRequest, model1.test.timePerRequest, '[ms] (mean)') %>
+        </tr>
+        <tr>
+            <th>Time per request</th>
+            <%= vdiff(model1.test.timePerRequestAll, model2.test.timePerRequestAll, '[ms] (mean, across all concurrent requests)') %>
+            <%= vdiff(model2.test.timePerRequestAll, model1.test.timePerRequestAll, '[ms] (mean, across all concurrent requests)') %>
+        </tr>
+        <tr>
+            <th>Transfer rate</th>
+            <%= vdiff(model1.test.transferRate, model2.test.transferRate, '[Kbytes/sec] received') %>
+            <%= vdiff(model2.test.transferRate, model1.test.transferRate, '[Kbytes/sec] received') %>
+        </tr>
+        <tr>
+            <th>Connection Times (ms)</th>
+            <td colspan="3">
+                <table border="1" style="width: 100%">
+                    <tr>
+                        <th></th>
+                        <th colspan="2">min</th>
+                        <th colspan="2">mean</th>
+                        <th colspan="2">[+/-sd]</th>
+                        <th colspan="2">median</th>
+                        <th colspan="2">max</th>
+                    </tr>
+                    <tr>
+                        <th>Connect</th>
+                        <%= vdiff(model1.time.connect.min, model2.time.connect.min) %>
+                        <%= vdiff(model2.time.connect.min, model1.time.connect.min) %>
+                        <%= vdiff(model1.time.connect.mean, model2.time.connect.mean) %>
+                        <%= vdiff(model2.time.connect.mean, model1.time.connect.mean) %>
+                        <%= vdiff(model1.time.connect.sd, model2.time.connect.sd) %>
+                        <%= vdiff(model2.time.connect.sd, model1.time.connect.sd) %>
+                        <%= vdiff(model1.time.connect.median, model2.time.connect.median) %>
+                        <%= vdiff(model2.time.connect.median, model1.time.connect.median) %>
+                        <%= vdiff(model1.time.connect.max, model2.time.connect.max) %>
+                        <%= vdiff(model2.time.connect.max, model1.time.connect.max) %>
+                    </tr>
+                    <tr>
+                        <th>Processing</th>
+                        <%= vdiff(model1.time.processing.min, model2.time.processing.min) %>
+                        <%= vdiff(model2.time.processing.min, model1.time.processing.min) %>
+                        <%= vdiff(model1.time.processing.mean, model2.time.processing.mean) %>
+                        <%= vdiff(model2.time.processing.mean, model1.time.processing.mean) %>
+                        <%= vdiff(model1.time.processing.sd, model2.time.processing.sd) %>
+                        <%= vdiff(model2.time.processing.sd, model1.time.processing.sd) %>
+                        <%= vdiff(model1.time.processing.median, model2.time.processing.median) %>
+                        <%= vdiff(model2.time.processing.median, model1.time.processing.median) %>
+                        <%= vdiff(model1.time.processing.max, model2.time.processing.max) %>
+                        <%= vdiff(model2.time.processing.max, model1.time.processing.max) %>
+                    </tr>
+                    <tr>
+                        <th>Waiting</th>
+                        <%= vdiff(model1.time.waiting.min, model2.time.waiting.min) %>
+                        <%= vdiff(model2.time.waiting.min, model1.time.waiting.min) %>
+                        <%= vdiff(model1.time.waiting.mean, model2.time.waiting.mean) %>
+                        <%= vdiff(model2.time.waiting.mean, model1.time.waiting.mean) %>
+                        <%= vdiff(model1.time.waiting.sd, model2.time.waiting.sd) %>
+                        <%= vdiff(model2.time.waiting.sd, model1.time.waiting.sd) %>
+                        <%= vdiff(model1.time.waiting.median, model2.time.waiting.median) %>
+                        <%= vdiff(model2.time.waiting.median, model1.time.waiting.median) %>
+                        <%= vdiff(model1.time.waiting.max, model2.time.waiting.max) %>
+                        <%= vdiff(model2.time.waiting.max, model1.time.waiting.max) %>
+                    </tr>
+                    <tr>
+                        <th>Total</th>
+                        <%= vdiff(model1.time.total.min, model2.time.total.min) %>
+                        <%= vdiff(model2.time.total.min, model1.time.total.min) %>
+                        <%= vdiff(model1.time.total.mean, model2.time.total.mean) %>
+                        <%= vdiff(model2.time.total.mean, model1.time.total.mean) %>
+                        <%= vdiff(model1.time.total.sd, model2.time.total.sd) %>
+                        <%= vdiff(model2.time.total.sd, model1.time.total.sd) %>
+                        <%= vdiff(model1.time.total.median, model2.time.total.median) %>
+                        <%= vdiff(model2.time.total.median, model1.time.total.median) %>
+                        <%= vdiff(model1.time.total.max, model2.time.total.max) %>
+                        <%= vdiff(model2.time.total.max, model1.time.total.max) %>
+                    </tr>
+                <table>
+            </td>
+        </tr>
+    </table>
 </script>
 
 <script src="/dist/vendor.js"></script>
