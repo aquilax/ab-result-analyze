@@ -9,6 +9,7 @@
         .gr {background-color: #cfc;}
         .sm {background-color: #fcc;}
         .eq {background-color: #ccf;}
+        .result-list {list-style: none; padding-left: 0}
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59829770-14"></script>
     <script>
@@ -21,31 +22,37 @@
 </head>
 <body>
     <h1>Apache Bench Result Analyser</h1>
+    <p>
+        Apache Bench result analyser is online tool for analising apache bemnchmark (ab) results online.
+        Simply copy and paste the benchmark result into the filed to get it analysed.
+    </p>
     <div id="app"></div>
-    <p>Apache Bench result analyser is online tool for analising apache bemnchmark (ab) results online.
-       Simply copy and paste the benchmark result into the filed to get it analysed.</p>
 
 <script type="text/template" id="app-template">
     <table>
         <tr>
             <td style="vertical-align:top">
                 <textarea class="content" cols="80" rows="36" placeholder="Paste the result from ab test here.."></textarea>
+                <br/>
+                <button id="import">Import</button>
+                <button id="export">Export</button>
+                <br/>
+                <div id="export-data"></div>
             </td>
-            <td>
-                <button class="process">Process</button>
+            <td valign="top" align="center" style="padding-top: 15em">
+                <button class="process">Preview</button>
+                <br/>
+                <button id="add">Add</button>
             </td>
             <td style="vertical-align: top">
                 <div id="ab-preview"></div>
+                <br/>
+                <button id="compare">Compare</button>
+                <div id="ab-results"></div>
+                <div id="diff-results"></div>
             </td>
         </tr>
     </table>
-    <button id="add">Add</button>
-    <button id="compare">Compare</button>
-    <button id="import">Import</button>
-    <button id="export">Export</button>
-    <div id="export-data"></div>
-    <div id="ab-results"></div>
-    <div id="diff-results"></div>
 </script>
 
 <script type="text/template" id="preview-template">
@@ -166,7 +173,7 @@
 </script>
 
 <script type="text/template" id="result-list-template">
-    <ul>
+    <ul class="result-list">
     <% _.each(collection, function(model) { %>
         <li data-id="<%- model.cid %>">
             <input type="radio" name="from" value="<%- model.cid %>"/>

@@ -114,12 +114,15 @@ class AppView extends Backbone.View.extend({
     }
 
     onClickExport() {
-        this.$el.find('#export-data').html(JSON.stringify(this.collection.toJSON()));
+        this.$el.find('#export-data').html('<textarea cols="80" rows="10">' + JSON.stringify(this.collection.toJSON()) + '</textarea>');
     }
 
     onClickCompare() {
         const fromCid = this.$el.find('input[name=\'from\']:checked').val();
         const toCid = this.$el.find('input[name=\'to\']:checked').val();
+        if (!(fromCid && toCid)) {
+            window.alert('Please select results to compare');
+        }
         const fromModel = this.collection.findWhere({
             cid: fromCid,
         });
