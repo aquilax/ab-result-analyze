@@ -1,9 +1,11 @@
 'use strict';
 
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
+        vendor: ["jquery/dist/jquery.slim", "backbone", "underscore", "ab-result"],
         app: './src/js/app.js',
     },
     output: {
@@ -14,7 +16,7 @@ module.exports = {
         modules: [
             path.resolve(__dirname + '/src'),
             path.resolve(__dirname + '/node_modules')
-        ]
+        ],
     },
     module: {
         rules: [
@@ -24,12 +26,18 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                      presets: ['env']
-                    }
-                  }
-            }
-        ]
+                        presets: ['env'],
+                    },
+                },
+            },
+        ],
     },
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            name: "vendor",
+            minChunks: Infinity,
+        }),
+    ],
     target: 'web',
-    devtool: 'source-map'
+    devtool: 'source-map',
 };

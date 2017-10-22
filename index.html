@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Apache Bench Result Analyser</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59829770-14"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -14,7 +13,6 @@
 
         gtag('config', 'UA-59829770-14');
     </script>
-
 </head>
 <body>
     <h1>Apache Bench Result Analyser</h1>
@@ -26,7 +24,7 @@
     <table>
         <tr>
             <td style="vertical-align:top">
-                <textarea class="content" cols="80" rows="30" placeholder="Paste the result from ab test here.."></textarea>
+                <textarea class="content" cols="80" rows="36" placeholder="Paste the result from ab test here.."></textarea>
             </td>
             <td>
                 <button class="process">Process</button>
@@ -37,6 +35,10 @@
         </tr>
     </table>
     <button id="add">Add</button>
+    <button id="compare">Compare</button>
+    <button id="import">Import</button>
+    <button id="export">Export</button>
+    <div id="export-data"></div>
     <div id="ab-results"></div>
 </script>
 
@@ -156,17 +158,24 @@
         </tr>
     </table>
 </script>
+
 <script type="text/template" id="result-list-template">
     <ul>
     <% _.each(collection, function(model) { %>
         <li data-id="<%- model.cid %>">
+            <input type="radio" name="from"/>
+            <input type="radio" name="to"/>
             Requests: <b><%- model.test.completeRequests + model.test.failedRequests %></b>
             Concurrency: <b><%- model.test.concurencyLevel %></b>
             (<%- model.server.hostname %>:<%- model.server.port %>)
+            <button class="view">View</button>
+            <button class="remove">Remove</button>
         </li>
     <% }); %>
     </ul>
 </script>
+
+<script src="/dist/vendor.js"></script>
 <script src="/dist/app.js"></script>
 <img src="//topsitecounter.appspot.com/t" alt="Top Site Counter" width="1" height="1" />
 </body>

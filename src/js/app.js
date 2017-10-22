@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import $ from 'jquery/dist/jquery.min';
+import $ from 'jquery/dist/jquery.slim';
 import _ from 'underscore';
 import abResult from 'ab-result';
 
@@ -28,7 +28,7 @@ class ResultListView extends Backbone.View.extend({
     template: _.template($('#result-list-template').html()),
 }) {
     initialize() {
-        this.listenTo(this.collection, 'update', this.render);
+        this.listenTo(this.collection, 'update reset', this.render);
     }
 
     render() {
@@ -46,6 +46,9 @@ class AppView extends Backbone.View.extend({
         'click .process': 'onClickProcess',
         'click #add': 'onClickAdd',
         'input textarea': 'onClickProcess',
+        'click #export': 'onClickExport',
+        'click #compare': 'onClickCompare',
+        'click #import': 'onClickImport',
     },
 }) {
     initialize() {
@@ -78,6 +81,20 @@ class AppView extends Backbone.View.extend({
         const data = this.model.toJSON();
         data.cid = this.model.cid;
         this.collection.add([new AbResultModel(data)]);
+    }
+
+    onClickExport() {
+        this.$el.find('#export-data').html(JSON.stringify(this.collection.toJSON()));
+    }
+
+    onClickCompare() {
+        window.alert('Not Implemented');
+    }
+
+    onClickImport() {
+        const data = window.prompt('Paste exported data', '[]');
+        const collectionData = JSON.parse(data);
+        this.collection.reset(collectionData);
     }
 }
 
