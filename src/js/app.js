@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import $ from 'jquery/dist/jquery.slim';
+import $ from 'jquery';
 import _ from 'underscore';
 import abResult from 'ab-result';
 
