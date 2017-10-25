@@ -8,23 +8,23 @@ webpackJsonp([0],{
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _backbone = __webpack_require__(230);
+var _backbone = __webpack_require__(70);
 
 var _backbone2 = _interopRequireDefault(_backbone);
 
-var _jquery = __webpack_require__(39);
+var _jquery = __webpack_require__(23);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _underscore = __webpack_require__(69);
+var _underscore = __webpack_require__(40);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _chart = __webpack_require__(232);
+var _chart = __webpack_require__(71);
 
 var _chart2 = _interopRequireDefault(_chart);
 
-var _abResult = __webpack_require__(280);
+var _abResult = __webpack_require__(192);
 
 var _abResult2 = _interopRequireDefault(_abResult);
 
@@ -177,7 +177,6 @@ var ChartView = function (_Backbone$View$extend4) {
         key: 'initialize',
         value: function initialize(op) {
             this.op = op;
-            window.console.log(op);
             this.render();
         }
     }, {
@@ -299,20 +298,51 @@ var AppView = function (_Backbone$View$extend5) {
                 view.destroy();
             });
 
-            var keys = ['completeRequests', 'concurencyLevel', 'failedRequests', 'htmlTransferred', 'requestsPerSecond', 'timePerRequest', 'timePerRequestAll', 'timeTaken', 'totalTransferred', 'transferRate'];
+            var keys = {
+                completeRequests: {
+                    color: '#5cbae6'
+                },
+                concurencyLevel: {
+                    color: '#b6d957'
+                },
+                failedRequests: {
+                    color: '#fac364'
+                },
+                htmlTransferred: {
+                    color: '#8cd3ff'
+                },
+                requestsPerSecond: {
+                    color: '#d998cb'
+                },
+                timePerRequest: {
+                    color: '#f2d249'
+                },
+                timePerRequestAll: {
+                    color: '#93b9c6'
+                },
+                timeTaken: {
+                    color: '#ccc5a8'
+                },
+                totalTransferred: {
+                    color: '#52bacc'
+                },
+                transferRate: {
+                    color: '#dbdb46'
+                }
+            };
             var tests = this.collection.pluck('test');
             var lbls = tests.map(function (el) {
                 return 'n:' + el.completeRequests + '/c:' + el.concurencyLevel;
             });
 
-            keys.forEach(function (key) {
+            Object.keys(keys).forEach(function (key) {
                 var dataSeries = _underscore2.default.pluck(tests, key);
                 var view = new ChartView({
                     type: 'line',
                     data: {
                         labels: lbls,
                         datasets: [{
-                            backgroundColor: '#f00',
+                            backgroundColor: keys[key]['color'],
                             label: key,
                             data: dataSeries
                         }]

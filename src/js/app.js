@@ -73,7 +73,6 @@ class ChartView extends Backbone.View.extend({
 }) {
     initialize(op) {
         this.op = op;
-        window.console.log(op);
         this.render();
     }
 
@@ -182,31 +181,51 @@ class AppView extends Backbone.View.extend({
             view.destroy();
         });
 
-        const keys = [
-            'completeRequests',
-            'concurencyLevel',
-            'failedRequests',
-            'htmlTransferred',
-            'requestsPerSecond',
-            'timePerRequest',
-            'timePerRequestAll',
-            'timeTaken',
-            'totalTransferred',
-            'transferRate',
-        ];
+        const keys = {
+            completeRequests: {
+                color: '#5cbae6',
+            },
+            concurencyLevel: {
+                color: '#b6d957',
+            },
+            failedRequests: {
+                color: '#fac364',
+            },
+            htmlTransferred: {
+                color: '#8cd3ff',
+            },
+            requestsPerSecond: {
+                color: '#d998cb',
+            },
+            timePerRequest: {
+                color: '#f2d249',
+            },
+            timePerRequestAll: {
+                color: '#93b9c6',
+            },
+            timeTaken: {
+                color: '#ccc5a8',
+            },
+            totalTransferred: {
+                color: '#52bacc',
+            },
+            transferRate: {
+                color: '#dbdb46',
+            },
+        };
         const tests = this.collection.pluck('test');
         const lbls = tests.map((el) => {
             return `n:${el.completeRequests}/c:${el.concurencyLevel}`;
         });
 
-        keys.forEach((key) => {
+        Object.keys(keys).forEach((key) => {
             const dataSeries = _.pluck(tests, key);
             const view = new ChartView({
                 type: 'line',
                 data: {
                     labels: lbls,
                     datasets: [{
-                        backgroundColor: '#f00',
+                        backgroundColor: keys[key]['color'],
                         label: key,
                         data: dataSeries,
                     }],
