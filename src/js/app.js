@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import $ from 'jquery';
 import _ from 'underscore';
+import ChartJS from 'chart.js';
 import abResult from 'ab-result';
 
 class AbResultModel extends Backbone.Model {}
@@ -67,6 +68,33 @@ class ResultListView extends Backbone.View.extend({
     }
 }
 
+class ChartView extends Backbone.View.extend({
+    template: _.template($('#chart-template').html()),
+}) {
+    initialize(op) {
+        this.op = op;
+        window.console.log(op);
+        this.render();
+    }
+
+    render() {
+        this.$el.html(this.template());
+        const ctx = this.$el.find('.chart').get(0).getContext('2d');
+        this.chart = new ChartJS(ctx, {
+            type: this.op.type,
+            data: this.op.data,
+            options: this.op.options,
+        });
+        return this;
+    }
+
+    destroy() {
+        this.chart.destroy();
+        this.remove();
+    }
+}
+
+
 class AppView extends Backbone.View.extend({
     el: '#app',
     template: _.template($('#app-template').html()),
@@ -77,12 +105,14 @@ class AppView extends Backbone.View.extend({
         'click #export': 'onClickExport',
         'click #compare': 'onClickCompare',
         'click #import': 'onClickImport',
+        'click #charts': 'onClickCharts',
     },
 }) {
     initialize() {
         this.model = new AbResultModel();
         this.collection = new AbResultCollection();
         this.diffView = null;
+        this.chartViews = [];
         this.render();
     }
 
@@ -122,6 +152,7 @@ class AppView extends Backbone.View.extend({
         const toCid = this.$el.find('input[name=\'to\']:checked').val();
         if (!(fromCid && toCid)) {
             window.alert('Please select results to compare');
+            return;
         }
         const fromModel = this.collection.findWhere({
             cid: fromCid,
@@ -143,6 +174,56 @@ class AppView extends Backbone.View.extend({
         const data = window.prompt('Paste exported data', '[]');
         const collectionData = JSON.parse(data);
         this.collection.reset(collectionData);
+    }
+
+    onClickCharts() {
+        const parent = this.$el.find('#chart-results');
+        this.chartViews.forEach((view) => {
+            view.destroy();
+        });
+
+        const keys = [
+            'completeRequests',
+            'concurencyLevel',
+            'failedRequests',
+            'htmlTransferred',
+            'requestsPerSecond',
+            'timePerRequest',
+            'timePerRequestAll',
+            'timeTaken',
+            'totalTransferred',
+            'transferRate',
+        ];
+        const tests = this.collection.pluck('test');
+        const lbls = tests.map((el) => {
+            return `n:${el.completeRequests}/c:${el.concurencyLevel}`;
+        });
+
+        keys.forEach((key) => {
+            const dataSeries = _.pluck(tests, key);
+            const view = new ChartView({
+                type: 'line',
+                data: {
+                    labels: lbls,
+                    datasets: [{
+                        backgroundColor: '#f00',
+                        label: key,
+                        data: dataSeries,
+                    }],
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                },
+            });
+            this.chartViews.push(view);
+            parent.append(view.el);
+        });
     }
 }
 

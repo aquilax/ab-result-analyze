@@ -5,7 +5,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        vendor: ["jquery", "backbone", "underscore", "ab-result"],
+        vendor: ['jquery', 'backbone', 'underscore', 'chart.js', 'ab-result'],
         app: './src/js/app.js',
     },
     output: {
